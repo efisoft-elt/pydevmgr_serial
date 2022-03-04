@@ -15,7 +15,7 @@ setup(
     #data_files=data_files,
     license='CeCILL Free Software License Agreement v2.1',
     long_description=open('README.md').read(),
-    install_requires=['pydevmgr', 'pyserial'],
+    install_requires=['pydevmgr_core>=0.3', 'pyserial'],
     
     extras_require={
     },

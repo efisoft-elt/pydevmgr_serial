@@ -1,7 +1,6 @@
-from pydantic import BaseModel, validator
-from typing import Optional, Union 
+from typing import Optional
 from .serial_com import SerialCom, parse_com
-from pydevmgr_core import BaseRpc, reconfig
+from pydevmgr_core import BaseRpc
 
 
 
