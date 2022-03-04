@@ -2,7 +2,7 @@ An pydevmgr_core extension for serial communication
 
 
 
-Sources are [here](https://gitlab.lam.fr/efisoft/pydevmgr_serial) 
+Sources are [here](https://github.com/efisoft-elt/pydevmgr_serial) 
 
 Doc to comme
 
