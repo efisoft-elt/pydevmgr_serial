@@ -23,7 +23,7 @@ from pydevmgr_serial import BaseSerialNode, SerialCom
 import time
 
 class TesaNodeConfig(BaseSerialNode.Config):
-    type : str = 'Tesa'
+    type : 'Tesa'
     delay: float = 0.1 
     
 class TesaNode(BaseSerialNode):
@@ -57,6 +57,7 @@ from pydevmgr_core import NodeAlias
 
 class Tesa(BaseSerialDevice):    
     raw_pos = TesaNode.Prop('raw_pos')
+    
     @NodeAlias.prop('scaled_pos',['raw_pos'])
     def scaled_pos(self, raw_pos):
         return 10 + 1.3 * raw_pos    
