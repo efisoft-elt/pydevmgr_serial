@@ -53,22 +53,13 @@ class SerialDevice(BaseDevice):
     PARITY = PARITY
     STOPBITS = STOPBITS
     
-    def __init__(self, 
-           key: Optional[str] = None, 
-           config: Optional[Config] = None, 
-           com: Optional[sr.Serial] = None, 
-           **kwargs
-        ) -> None:
-        # parse config and com 
-                 
-        super().__init__(key, config=config,  **kwargs) 
-        
+    @classmethod
+    def new_com(cls, config: Config, com: Optional[sr.Serial]=None):
         if com is None:
-            com = sr.Serial( **self.config.dict( include=_serials_args ))
+            com = sr.Serial( **config.dict( include=_serials_args ))
             # add the port after so the connection is not yet established
-            com.port = self.config.port
-            
-        self._com = com 
+            com.port = config.port
+        return com 
 
     
     @property
