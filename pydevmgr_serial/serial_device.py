@@ -52,6 +52,17 @@ class SerialDevice(BaseDevice):
     BITSIZE = BITSIZE
     PARITY = PARITY
     STOPBITS = STOPBITS
+ 
+    _com = None                
+    def __init__(self, 
+           key: Optional[str] = None, 
+           config: Optional[Config] = None,
+           com: Optional[sr.Serial] = None,             
+           **kwargs
+        ) -> None:     
+        super().__init__(key, config=config, **kwargs)
+        self._com = self.new_com(self.config, com)
+    
     
     @classmethod
     def new_com(cls, config: Config, com: Optional[sr.Serial]=None):
@@ -60,7 +71,14 @@ class SerialDevice(BaseDevice):
             # add the port after so the connection is not yet established
             com.port = config.port
         return com 
-
+    
+    @classmethod
+    def new_args(cls, parent, config):
+        d = super().new_args(parent, config)
+        if isinstance( parent, (SerialDevice, SerialInterface) ):
+            d.update(com=parent.com)
+        return d
+    
     
     @property
     def com(self):
