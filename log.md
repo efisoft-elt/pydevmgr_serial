@@ -1,3 +1,7 @@
+0.4.3
+=====
+- align core version to 0.4.4
+
 0.4.0
 =====
 - align pydevmgr_serial to pydevmgr_core 0.4.1
