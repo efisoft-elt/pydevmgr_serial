@@ -29,7 +29,8 @@ class STOPBITS(float, Enum):
 _serials_args= set(['baudrate', 'bytesize', 'parity', 'stopbits', 'timeout', 
     'xonxoff', 'rtscts', 'write_teimout',
     'inter_byte_teimout', 'exclusive' ])
-    
+
+ 
 class SerialDevice(BaseDevice):
     class Config(BaseDevice.Config):
         port : str = ""
