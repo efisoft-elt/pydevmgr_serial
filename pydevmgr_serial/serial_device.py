@@ -74,8 +74,8 @@ class SerialDevice(BaseDevice):
         return com 
     
     @classmethod
-    def new_args(cls, parent, config):
-        d = super().new_args(parent, config)
+    def new_args(cls, parent, name,  config):
+        d = super().new_args(parent, name, config)
         if isinstance( parent, (SerialDevice, SerialInterface) ):
             d.update(com=parent.com)
         return d
