@@ -6,36 +6,33 @@ import time
 from threading import Thread 
 import random 
 
-class TesaNodeConfig(BaseSerialNode.Config):
-    type : str = 'Tesa'
-    delay: float = 0.02 
     
 class TesaNode(BaseSerialNode):
-    Config = TesaNodeConfig
+    class Config:
+        delay: float = 0.02
+    
     def fget(self): 
 
         print("FGETIING .... ")
-        self.com.write(b'?\r')
+        self.serial.write(b'?\r')
         print("write done")
-        self.com.flush()
+        self.serial.flush()
         time.sleep(self.config.delay)
         
-        sval = self.com.read(20)
+        sval = self.serial.read(20)
         if not sval:
             return -9.99
         return float(sval)
 
 
-class Tesa(SerialDevice, position=TesaNode.Config()):
-    pass
+class Tesa(SerialDevice):
+    position = TesaNode.Config()
     
-
-
-
 class SerialSimu(Thread):
     def __init__(self):
         self.master, self.slave = pty.openpty()
         self.running = False
+        self.value = 1.0
         super().__init__()
     
     @property
@@ -50,7 +47,6 @@ class SerialSimu(Thread):
        
     def run(self):
         #with os.fdopen(self.master, "wb") as fw:
-        print("HAAAAAAAAAA")
         
         self.running = True
         with os.fdopen(self.master, "w+b") as fd:
@@ -63,20 +59,22 @@ class SerialSimu(Thread):
                         return                    
                 if a:                           
                         #with os.fdopen(self.master, "wb") as fw:    
-                        v = 3 + random.random() - 0.5            
-                        fd.write( f'{v}'.encode())
+                        fd.write( f'{self.value}'.encode())
                         fd.flush()
                 time.sleep(0.01)
                 print(".", end="")
 
-if __name__ == "__main__":        
+
+
+# def test_node_get_with_simulator():
+if __name__=="__main__":
     t  = SerialSimu()
-    print("Simu running on ", t.port)    
     tesa = Tesa('tesa', config={'port':t.port, 'timeout':0.1, 'write_timeout':1.0})
     tesa.connect()
-    
     t.start()
-    tesa.position.get()
+    assert tesa.position.get() == 1.0
+    t.value = 99.99
+    assert tesa.position.get() == 99.99
     t.quit()
     tesa.disconnect()
         

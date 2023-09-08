@@ -19,54 +19,61 @@ Bellow is an exemple of implementation of a node that check a value from a Tesla
 An extra configuration argument is added and the fget method is implemented. 
 
 ```python 
-from pydevmgr_serial import BaseSerialNode, SerialCom
+from pydevmgr_serial import BaseSerialNode
 import time
 
-class TesaNodeConfig(BaseSerialNode.Config):
-    type : 'Tesa'
-    delay: float = 0.1 
     
 class TesaNode(BaseSerialNode):
-    Config = TesaNodeConfig
+    class Config:
+        delay: float = 0.1
+        
     def fget(self):
-        self.com.serial.write(b'?\r')
+        self.serial.write(b'?\r')
         time.sleep(self.config.delay)
-        sval = self.com.serial.read(20)
+        sval = self.serial.read(20)
         val = float(sval)
         return val
 ```
 
+you can simply use the node with a Serial object :
+
 ```python 
+from serial import Serial 
+
 # build a standalone node 
-tesa_com = SerialCom(port='COM1', baudrate=9600)
-tesa = TesaNode(com=tesa_com)
-try:
-    tesa_com.connect()
-    print( "Position is ", tesa.get() )
-finally:
-    tesa_com.disconnect()
+com = Serial(port='COM1', baudrate=9600)
+tesa = TesaNode(com=com)
+
+print( "Position is ", tesa.get() )
+com.close()
+
 ```
 
-One can include the node in device
+One can include the node in a serial device which will hold the communcation
+
+Note: One creating a SerialDevice the port is not directly opened one needs to use
+the ``connect`` method or within a with statement. 
+
 
 ```python 
-from pydevmgr_serial import BaseSerialDevice
-from pydevmgr_core import NodeAlias
+from pydevmgr_serial import SerialDevice
+from pydevmgr_core import nodealias
 
 
 
-class Tesa(BaseSerialDevice):    
-    raw_pos = TesaNode.Prop('raw_pos')
+class Tesa(SerialDevice):    
+    raw_pos = TesaNode.Config()
     
-    @NodeAlias.prop('scaled_pos',['raw_pos'])
-    def scaled_pos(self, raw_pos):
+    @nodealias('raw_pos')
+    def position(self, raw_pos):
         return 10 + 1.3 * raw_pos    
 ```
 
 ```python 
-tesa = Tesa('tesa', com={'port':'COM1'})
-tesa.connect()
-tesa.scaled_pos.get()
+tesa = Tesa('tesa',  port ='COM1', baudrate=9600)
+
+with tesa:
+    tesa.position.get()
 ```
 
 

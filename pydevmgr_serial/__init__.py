@@ -1,6 +1,5 @@
-
-from .serial_device import SerialDevice,  BITSIZE, PARITY, STOPBITS
-from .serial_node import BaseSerialNode
-from .serial_interface import SerialInterface
-from .serial_rpc import BaseSerialRpc
+from .device import SerialDevice,  BITSIZE, PARITY, STOPBITS
+from .node import BaseSerialNode
+from .interface import SerialInterface
+from .rpc import BaseSerialRpc
 
